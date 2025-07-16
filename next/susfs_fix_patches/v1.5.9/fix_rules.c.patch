@@ -1,6 +1,8 @@
---- "./kernel/selinux/rules.c"	2025-07-11 05:27:15.370082400 -0400
-+++ "./kernel/selinux/rules.c"	2025-07-11 05:46:15.023362789 -0400
-@@ -38,11 +38,11 @@
+diff --git a/kernel/selinux/rules.c b/kernel/selinux/rules.c
+index ee9c36e..d2134b1 100644
+--- a/kernel/selinux/rules.c
++++ b/kernel/selinux/rules.c
+@@ -38,11 +38,11 @@ static struct policydb *get_policydb(void)
  
  static DEFINE_MUTEX(ksu_rules);
  
@@ -14,7 +16,7 @@
  		pr_info("SELinux permissive or disabled, apply rules!\n");
  	}
  
-@@ -139,6 +139,14 @@
+@@ -147,6 +147,14 @@ void apply_kernelsu_rules()
  	ksu_allow(db, "system_server", KERNEL_SU_DOMAIN, "process", "getpgid");
  	ksu_allow(db, "system_server", KERNEL_SU_DOMAIN, "process", "sigkill");
  
