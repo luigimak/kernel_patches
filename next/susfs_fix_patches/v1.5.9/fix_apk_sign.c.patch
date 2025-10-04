@@ -1,9 +1,9 @@
 diff --git a/kernel/apk_sign.c b/kernel/apk_sign.c
-index c1e803d7..1e8f98e6 100644
+index 42109648..188d9fc9 100644
 --- a/kernel/apk_sign.c
 +++ b/kernel/apk_sign.c
-@@ -385,7 +385,8 @@
- 
+@@ -321,7 +321,8 @@ bool is_manager_apk(char *path)
+ {
  	// set debug info to print size and hash to kernel log
  	pr_info("%s: expected size: %u, expected hash: %s\n",
  		path, expected_manager_size, expected_manager_hash);
