@@ -2,7 +2,9 @@ diff --git a/kernel/apk_sign.c b/kernel/apk_sign.c
 index 3f9e3a21..3b3b78ea 100644
 --- a/kernel/apk_sign.c
 +++ b/kernel/apk_sign.c
-@@ -308,5 +308,6 @@ module_param_cb(ksu_debug_manager_appid, &expected_size_ops,
+@@ -306,7 +306,8 @@ module_param_cb(ksu_debug_manager_appid, &expected_size_ops,
+ 
+ #endif
  
  bool is_manager_apk(char *path)
  {

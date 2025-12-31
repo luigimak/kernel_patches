@@ -2,7 +2,9 @@ diff --git a/kernel/allowlist.c b/kernel/allowlist.c
 index 11066f60..266865e9 100644
 --- a/kernel/allowlist.c
 +++ b/kernel/allowlist.c
-@@ -263,8 +263,10 @@ out:
+@@ -261,12 +261,14 @@ out:
+ 		       sizeof(default_root_profile));
+ 	}
  
  	if (persist) {
  		persistent_allow_list();
@@ -13,3 +15,4 @@ index 11066f60..266865e9 100644
  	}
  
  	return result;
+ }

@@ -2,7 +2,9 @@ diff --git a/kernel/kernel_umount.c b/kernel/kernel_umount.c
 index d914ebdd..caf099b0 100644
 --- a/kernel/kernel_umount.c
 +++ b/kernel/kernel_umount.c
-@@ -132,6 +132,7 @@ int ksu_handle_umount(uid_t old_uid, uid_t new_uid)
+@@ -130,10 +130,11 @@ int ksu_handle_umount(uid_t old_uid, uid_t new_uid)
+ 	bool is_zygote_child = is_zygote(get_current_cred());
+ 	if (!is_zygote_child) {
  		pr_info("handle umount ignore non zygote child: %d\n", current->pid);
  		return 0;
  	}
@@ -10,3 +12,5 @@ index d914ebdd..caf099b0 100644
  	// umount the target mnt
  	pr_info("handle umount for uid: %d, pid: %d\n", new_uid, current->pid);
  
+ 	tw = kzalloc(sizeof(*tw), GFP_ATOMIC);
+ 	if (!tw)

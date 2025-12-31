@@ -1,8 +1,10 @@
 diff --git a/kernel/Kbuild b/kernel/Kbuild
-index 2562d366..71aed6f8 100644
+index f502d077..092d212d 100644
 --- a/kernel/Kbuild
 +++ b/kernel/Kbuild
-@@ -88,4 +88,14 @@ ccflags-y += -DEXPECTED_MANAGER_HASH=\"$(KSU_NEXT_MANAGER_HASH)\"
+@@ -90,6 +90,16 @@ ccflags-y += -DEXPECTED_MANAGER_SIZE=$(KSU_NEXT_MANAGER_SIZE)
+ ccflags-y += -DEXPECTED_MANAGER_HASH=\"$(KSU_NEXT_MANAGER_HASH)\"
+ 
  ccflags-y += -Wno-strict-prototypes -Wno-int-conversion -Wno-gcc-compat -Wno-missing-prototypes
  ccflags-y += -Wno-declaration-after-statement -Wno-unused-function
  
