@@ -1,8 +1,8 @@
 diff --git a/kernel/ksu.c b/kernel/ksu.c
-index c1aa6f20..0bbf9924 100644
+index f0e79248..f5f36c78 100644
 --- a/kernel/ksu.c
 +++ b/kernel/ksu.c
-@@ -72,13 +72,24 @@ int __init kernelsu_init(void)
+@@ -82,13 +82,24 @@ int __init kernelsu_init(void)
  
  	ksu_supercalls_init();
  
@@ -27,7 +27,7 @@ index c1aa6f20..0bbf9924 100644
  
      ksu_file_wrapper_init();
  
-@@ -99,9 +110,11 @@ void kernelsu_exit(void)
+@@ -109,9 +120,11 @@ void kernelsu_exit(void)
  
  	ksu_observer_exit();
  
