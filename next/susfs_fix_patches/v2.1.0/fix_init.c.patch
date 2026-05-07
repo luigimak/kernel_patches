@@ -1,5 +1,3 @@
-diff --git a/kernel/core/init.c b/kernel/core/init.c
-index ec6532bc..34e7ec61 100644
 --- a/kernel/core/init.c
 +++ b/kernel/core/init.c
 @@ -5,6 +5,7 @@
@@ -10,7 +8,26 @@ index ec6532bc..34e7ec61 100644
  
  #include "policy/allowlist.h"
  #include "policy/app_profile.h"
-@@ -62,28 +63,6 @@ struct cred *ksu_cred;
+@@ -18,16 +19,9 @@
+ #include "ksu.h"
+ #include "infra/file_wrapper.h"
+ #include "selinux/selinux.h"
+-#include "hook/syscall_hook.h"
+ #include "feature/selinux_hide.h"
+-
+-#if defined(__x86_64__)
+-#include <asm/cpufeature.h>
+-#include <linux/version.h>
+-#ifndef X86_FEATURE_INDIRECT_SAFE
+-#error "FATAL: Your kernel is missing the indirect syscall bypass patches!"
+-#endif
+-#endif
++#include "hook/setuid_hook.h"
++#include "feature/sucompat.h"
+ 
+ // workaround for A12-5.10 kernel
+ // Some third-party kernel (e.g. linegaeOS) uses wrong toolchain, which supports
+@@ -77,28 +71,6 @@
  
  int __init kernelsu_init(void)
  {
@@ -39,14 +56,21 @@ index ec6532bc..34e7ec61 100644
  #ifdef CONFIG_KSU_DEBUG
  	pr_alert("*************************************************************");
  	pr_alert("**     NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE    **");
-@@ -99,75 +78,35 @@ int __init kernelsu_init(void)
-         pr_err("prepare cred failed!\n");
-     }
+@@ -117,79 +89,41 @@
+ 		pr_err("prepare cred failed!\n");
+ 	}
  
 -	ksu_syscall_hook_init();
--
++#ifdef CONFIG_KSU_SUSFS
++	susfs_init();
++#endif // #ifdef CONFIG_KSU_SUSFS
+ 
  	ksu_feature_init();
  
+-	ksu_lsm_hook_init();
+-
+-	ksu_selinux_hide_init();
+-
  	ksu_supercalls_init();
  
 -	if (ksu_late_loaded) {
@@ -55,45 +79,45 @@ index ec6532bc..34e7ec61 100644
 -		apply_kernelsu_rules();
 -		cache_sid();
 -		setup_ksu_cred();
--
++	ksu_sucompat_init();
+ 
 -		// Grant current process (ksud late-load) root
 -		// with KSU SELinux domain before enforcing SELinux, so it
 -		// can continue to access /data/app etc. after enforcement.
 -		escape_to_root_for_init();
-+    ksu_sucompat_init();
++	ksu_setuid_hook_init();
  
 -		ksu_allowlist_init();
 -		ksu_load_allow_list();
-+    ksu_setuid_hook_init();
- 
+-
 -		ksu_syscall_hook_manager_init();
-+	ksu_allowlist_init();
- 
+-
 -		ksu_throne_tracker_init();
 -		ksu_observer_init();
 -		ksu_file_wrapper_init();
-+	ksu_throne_tracker_init();
- 
+-
 -		ksu_boot_completed = true;
 -		track_throne(false);
-+	ksu_ksud_init();
- 
+-
 -		if (!getenforce()) {
 -			pr_info("Permissive SELinux, enforcing\n");
 -			setenforce(true);
 -		}
-+	ksu_file_wrapper_init();
++	ksu_selinux_hide_init();
  
 -	} else {
 -		ksu_syscall_hook_manager_init();
-+    susfs_init();
++	ksu_allowlist_init();
  
 -		ksu_allowlist_init();
--
++	ksu_throne_tracker_init();
+ 
 -		ksu_throne_tracker_init();
--
++	ksu_ksud_init();
+ 
 -		ksu_ksud_init();
--
++	ksu_file_wrapper_init();
+ 
 -		ksu_file_wrapper_init();
 -	}
 -
@@ -114,7 +138,8 @@ index ec6532bc..34e7ec61 100644
  
 -	if (!ksu_late_loaded)
 -		ksu_ksud_exit();
--
++	ksu_ksud_exit();
+ 
  	// Wait for any in-flight RCU readers (e.g. handler traversing allow_list)
  	synchronize_rcu();
  
@@ -123,3 +148,12 @@ index ec6532bc..34e7ec61 100644
  	ksu_observer_exit();
  
  	ksu_throne_tracker_exit();
+@@ -198,8 +132,6 @@
+ 
+ 	ksu_selinux_hide_exit();
+ 
+-	ksu_lsm_hook_exit();
+-
+ 	ksu_feature_exit();
+ 
+ 	if (ksu_cred) {
