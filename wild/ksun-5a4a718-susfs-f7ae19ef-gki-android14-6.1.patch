@@ -5734,7 +5734,7 @@ index 08488da68..48c0fd264 100644
 +
  #endif
 diff --git a/kernel/supercall/dispatch.c b/kernel/supercall/dispatch.c
-index e1801e83c..9cdb2ecb0 100644
+index e1801e83c..b10b08836 100644
 --- a/kernel/supercall/dispatch.c
 +++ b/kernel/supercall/dispatch.c
 @@ -4,6 +4,9 @@
@@ -6631,7 +6631,7 @@ index e1801e83c..9cdb2ecb0 100644
  }
  
  struct list_head mount_list = LIST_HEAD_INIT(mount_list);
-@@ -505,417 +573,419 @@ DECLARE_RWSEM(mount_list_lock);
+@@ -505,417 +573,413 @@ DECLARE_RWSEM(mount_list_lock);
  
  static int add_try_umount(void __user *arg)
  {
@@ -6946,14 +6946,10 @@ index e1801e83c..9cdb2ecb0 100644
  
 -#ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
 -    strscpy(cmd.mode, "Tracepoint", sizeof(cmd.mode));
-+#ifdef CONFIG_KSU_SUSFS
-+	strscpy(cmd.mode, "Inline (SUSFS)", sizeof(cmd.mode));
-+#elif defined(CONFIG_HAVE_SYSCALL_TRACEPOINTS)
-+	strscpy(cmd.mode, "Tracepoint", sizeof(cmd.mode));
- #else
+-#else
 -    strscpy(cmd.mode, "Kprobes", sizeof(cmd.mode));
-+	strscpy(cmd.mode, "Kprobes", sizeof(cmd.mode));
- #endif
+-#endif
++	strscpy(cmd.mode, "Inline (SUSFS)", sizeof(cmd.mode));
  
 -    if (copy_to_user(arg, &cmd, sizeof(cmd))) {
 -        pr_err("get_hook_mode: copy_to_user failed\n");
