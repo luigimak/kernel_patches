@@ -1,6 +1,6 @@
-From 5cf9c2696b1620c56709521fd1e1d2c8e8942606 Mon Sep 17 00:00:00 2001
+From 8a485ffbc36b5e26b50e01b769956bad8620ffb6 Mon Sep 17 00:00:00 2001
 From: luigimak <luigimak10@gmail.com>
-Date: Fri, 12 Jun 2026 19:33:27 +0200
+Date: Fri, 12 Jun 2026 21:43:53 +0200
 Subject: [PATCH] Test a14-6.1 bbrv3
 
 BBRv3 + PLB for android14-6.1, packaged as separate tcp_bbr3.c module
@@ -8,7 +8,8 @@ BBRv3 + PLB for android14-6.1, packaged as separate tcp_bbr3.c module
 approach as the a13-5.15 patch. Core infra from the 20-patch google/bbr
 series via ahmed-alnassif/GKI-Duchamp; tcp_bbr.c left at v1, v3 code
 moved to tcp_bbr3.c with bbr3_-prefixed symbols to avoid BTF/kfunc
-name clashes. Tested on OnePlusOSS android_kernel_common_oneplus_sm8650
+name clashes. UAPI struct tcp_bbr_info member names kept as bbr_*.
+Tested on OnePlusOSS android_kernel_common_oneplus_sm8650
 branch oneplus/sm8650_b_16.0.0_oneplus12 (6.1.141).
 ---
  Documentation/networking/ip-sysctl.rst |   75 +
@@ -572,7 +573,7 @@ index 3b8e31f45..cfeae663a 100644
  
 diff --git a/net/ipv4/tcp_bbr3.c b/net/ipv4/tcp_bbr3.c
 new file mode 100644
-index 000000000..3738c12b2
+index 000000000..a64a5d25b
 --- /dev/null
 +++ b/net/ipv4/tcp_bbr3.c
 @@ -0,0 +1,2410 @@
@@ -2868,21 +2869,21 @@ index 000000000..3738c12b2
 +		struct tcp_bbr_info *bbr3_info = &info->bbr;
 +
 +		memset(bbr3_info, 0, sizeof(*bbr3_info));
-+		bbr3_info->bbr3_bw_lo		= (u32)bw;
-+		bbr3_info->bbr3_bw_hi		= (u32)(bw >> 32);
-+		bbr3_info->bbr3_min_rtt		= bbr->min_rtt_us;
-+		bbr3_info->bbr3_pacing_gain	= bbr->pacing_gain;
-+		bbr3_info->bbr3_cwnd_gain		= bbr->cwnd_gain;
-+		bbr3_info->bbr3_bw_hi_lsb		= (u32)bw_hi;
-+		bbr3_info->bbr3_bw_hi_msb		= (u32)(bw_hi >> 32);
-+		bbr3_info->bbr3_bw_lo_lsb		= (u32)bw_lo;
-+		bbr3_info->bbr3_bw_lo_msb		= (u32)(bw_lo >> 32);
-+		bbr3_info->bbr3_mode		= bbr->mode;
-+		bbr3_info->bbr3_phase		= (__u8)bbr3_get_phase(bbr);
-+		bbr3_info->bbr3_version		= (__u8)BBR_VERSION;
-+		bbr3_info->bbr3_inflight_lo	= bbr->inflight_lo;
-+		bbr3_info->bbr3_inflight_hi	= bbr->inflight_hi;
-+		bbr3_info->bbr3_extra_acked	= bbr3_extra_acked(sk);
++		bbr3_info->bbr_bw_lo		= (u32)bw;
++		bbr3_info->bbr_bw_hi		= (u32)(bw >> 32);
++		bbr3_info->bbr_min_rtt		= bbr->min_rtt_us;
++		bbr3_info->bbr_pacing_gain	= bbr->pacing_gain;
++		bbr3_info->bbr_cwnd_gain		= bbr->cwnd_gain;
++		bbr3_info->bbr_bw_hi_lsb		= (u32)bw_hi;
++		bbr3_info->bbr_bw_hi_msb		= (u32)(bw_hi >> 32);
++		bbr3_info->bbr_bw_lo_lsb		= (u32)bw_lo;
++		bbr3_info->bbr_bw_lo_msb		= (u32)(bw_lo >> 32);
++		bbr3_info->bbr_mode		= bbr->mode;
++		bbr3_info->bbr_phase		= (__u8)bbr3_get_phase(bbr);
++		bbr3_info->bbr_version		= (__u8)BBR_VERSION;
++		bbr3_info->bbr_inflight_lo	= bbr->inflight_lo;
++		bbr3_info->bbr_inflight_hi	= bbr->inflight_hi;
++		bbr3_info->bbr_extra_acked	= bbr3_extra_acked(sk);
 +		*attr = INET_DIAG_BBRINFO;
 +		return sizeof(*bbr3_info);
 +	}
