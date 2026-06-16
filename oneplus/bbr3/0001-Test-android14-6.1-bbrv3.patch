@@ -298,7 +298,7 @@ index 50655de..c9d9046 100644
  
 +#ifndef __GENKSYMS__
 +/* TCP BBR congestion control bbr_phase as reported in netlink/ss stats. */
-+enum tcp_bbr_phase {
++enum tcp_bbr3_phase {
 +	BBR3_PHASE_INVALID		= 0,
 +	BBR3_PHASE_STARTUP		= 1,
 +	BBR3_PHASE_DRAIN			= 2,
@@ -531,7 +531,7 @@ index 0000000..e2ab44f
 +
 +#define BBR_VERSION		3
 +
-+#define bbr3_param(sk,name)	(bbr_ ## name)
++#define bbr3_param(sk,name)	(bbr3_ ## name)
 +
 +/* Scale factor for rate in pkt/uSec unit to avoid truncation in bandwidth
 + * estimation. The rate unit ~= (1500 bytes / 1 usec / 2^24) ~= 715 bps.
@@ -2765,7 +2765,7 @@ index 0000000..e2ab44f
 +	case BBR3_BW_PROBE_REFILL:
 +		return BBR3_PHASE_PROBE_BW_REFILL;
 +	default:
-+		return BBR_PHASE_INVALID;
++		return BBR3_PHASE_INVALID;
 +	}
 +}
 +
@@ -2779,9 +2779,9 @@ index 0000000..e2ab44f
 +		u64 bw_hi = bbr3_bw_bytes_per_sec(sk, bbr3_max_bw(sk));
 +		u64 bw_lo = bbr3->bw_lo == ~0U ?
 +			~0ULL : bbr3_bw_bytes_per_sec(sk, bbr3->bw_lo);
-+		struct tcp_bbr_info *bbr_info = &info->bbr;
++		struct tcp_bbr_info *bbr3_info = &info->bbr;
 +
-+		memset(bbr_info, 0, sizeof(*bbr_info));
++		memset(bbr3_info, 0, sizeof(*bbr3_info));
 +		bbr3_info->bbr_bw_lo		= (u32)bw;
 +		bbr3_info->bbr_bw_hi		= (u32)(bw >> 32);
 +		bbr3_info->bbr_min_rtt		= bbr3->min_rtt_us;
@@ -2798,7 +2798,7 @@ index 0000000..e2ab44f
 +		bbr3_info->bbr_inflight_hi	= bbr3->inflight_hi;
 +		bbr3_info->bbr_extra_acked	= bbr3_extra_acked(sk);
 +		*attr = INET_DIAG_BBRINFO;
-+		return sizeof(*bbr_info);
++		return sizeof(*bbr3_info);
 +	}
 +	return 0;
 +}
